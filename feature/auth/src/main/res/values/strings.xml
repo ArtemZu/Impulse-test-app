@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_header_1">Hello</string>
+    <string name="sign_in_header_2">Welcome back</string>
+    <string name="sign_in">Sign in</string>
+    <string name="not_connected">⚠️ You aren’t connected to the internet</string>
+    <string name="common_error">Something went wrong</string>
+</resources>
