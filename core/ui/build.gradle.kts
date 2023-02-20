@@ -24,6 +24,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.3.2"
+    }
 }
 
 // Allow references to generated code
@@ -32,6 +36,8 @@ kapt {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":core:designsystem")))
+
     kapt(Libraries.hiltKapt)
     implementation(Libraries.hilt)
 
@@ -42,4 +48,6 @@ dependencies {
     implementation(Libraries.composeMaterial3)
 
     implementation(Libraries.koil)
+
+    debugImplementation(Libraries.androidTestComposeUiTooling)
 }

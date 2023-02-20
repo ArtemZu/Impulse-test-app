@@ -7,5 +7,6 @@ data class RepositoryUiItem(
     val language: String?,
     val url: String,
     val ownerName: String,
-    val ownerAvatar: String
+    val ownerAvatar: String,
+    val isShown: Boolean?
 )

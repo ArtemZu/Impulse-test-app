@@ -15,6 +15,9 @@ interface RepositoryDao {
     @Query("SELECT * FROM RepositoryEntity")
     fun getCachedRepositories(): Flow<List<RepositoryEntity>>
 
+    @Query("SELECT id FROM RepositoryEntity")
+    fun getCachedRepositoriesIds(): Flow<List<Int>>
+
     @Query("DELETE FROM RepositoryEntity WHERE id IN (SELECT id FROM RepositoryEntity LIMIT 1 OFFSET 20)")
     suspend fun removeOldData()
 }

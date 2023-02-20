@@ -26,9 +26,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.artemzu.githubapp.designsystem.GitHubAppTheme
 import com.artemzu.githubapp.ui.data.RepositoryUiItem
 
 @Composable
@@ -84,20 +86,59 @@ fun RepositoryItem(
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            if (!item.language.isNullOrBlank()) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(color = MaterialTheme.colorScheme.background)
-                        .padding(4.dp)
-                ) {
-                    Text(
-                        text = item.language,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                if (!item.language.isNullOrBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(color = MaterialTheme.colorScheme.background)
+                            .padding(4.dp)
+                    ) {
+                        Text(
+                            text = item.language,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                }
+                if (item.isShown == true) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(color = MaterialTheme.colorScheme.onSurface)
+                            .padding(4.dp)
+                    ) {
+                        Text(
+                            text = "Shown",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.inverseOnSurface
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun RepositoryItemPreview() {
+    GitHubAppTheme {
+        RepositoryItem(
+            item = RepositoryUiItem(
+                id = 1,
+                name = "Koin",
+                description = "Android library",
+                language = "Kotlin",
+                url = "",
+                ownerName = "InsertKoinIO",
+                ownerAvatar = "",
+                isShown = true,
+            ),
+            onItemClick = {}
+        )
     }
 }
