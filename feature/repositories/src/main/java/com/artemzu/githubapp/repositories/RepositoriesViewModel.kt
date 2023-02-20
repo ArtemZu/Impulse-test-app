@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.artemzu.githubapp.data.model.Repository
 import com.artemzu.githubapp.domain.auth.LogoutUseCase
 import com.artemzu.githubapp.domain.history.SaveRepositoryUseCase
+import com.artemzu.githubapp.domain.repositories.GetSavedRepositoriesIds
 import com.artemzu.githubapp.domain.repositories.SearchRepositoriesUseCase
 import com.artemzu.githubapp.repositories.model.RepositoriesUiState
 import com.artemzu.githubapp.repositories.model.asRepositoryItem
@@ -16,8 +17,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,11 +30,26 @@ import javax.inject.Inject
 class RepositoriesViewModel @Inject constructor(
     private val searchRepositoriesUseCase: SearchRepositoriesUseCase,
     private val logoutUseCase: LogoutUseCase,
-    private val saveRepositoryUseCase: SaveRepositoryUseCase
+    private val saveRepositoryUseCase: SaveRepositoryUseCase,
+    getSavedRepositoriesIds: GetSavedRepositoriesIds
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RepositoriesUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState: StateFlow<RepositoriesUiState> =
+        combine(_uiState, getSavedRepositoriesIds.invoke()) { uiState, savedIdsList ->
+            val updatedList = uiState.repositoriesList.map { item ->
+                if (savedIdsList.contains(item.id)) {
+                    item.copy(isShown = true)
+                } else {
+                    item
+                }
+            }
+            uiState.copy(repositoriesList = updatedList)
+        }.stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = RepositoriesUiState()
+        )
 
     private val _event = MutableSharedFlow<Event>()
     val event = _event.asSharedFlow()
@@ -57,9 +76,7 @@ class RepositoriesViewModel @Inject constructor(
             _event.emit(Event.ShowError)
         },
         onSuccess = { items: List<Repository>, newKey: Int, isNewRequest: Boolean ->
-            val repositoriesItemsList = items.map { repository ->
-                repository.asRepositoryItem()
-            }
+            val repositoriesItemsList = items.map { it.asRepositoryItem() }
             _uiState.update {
                 it.copy(
                     repositoriesList = if (isNewRequest) repositoriesItemsList else it.repositoriesList + repositoriesItemsList,

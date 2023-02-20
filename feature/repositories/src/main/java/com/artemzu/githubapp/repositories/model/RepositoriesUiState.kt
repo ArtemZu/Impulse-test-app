@@ -19,7 +19,8 @@ fun Repository.asRepositoryItem(): RepositoryUiItem =
         language = language,
         url = url,
         ownerName = ownerLogin,
-        ownerAvatar = ownerAvatarUrl
+        ownerAvatar = ownerAvatarUrl,
+        isShown = isShown
     )
 
 fun RepositoryUiItem.asRepositoryItem(): Repository =
@@ -30,5 +31,6 @@ fun RepositoryUiItem.asRepositoryItem(): Repository =
         language = language,
         url = url,
         ownerLogin = ownerName,
-        ownerAvatarUrl = ownerAvatar
+        ownerAvatarUrl = ownerAvatar,
+        isShown = null
     )

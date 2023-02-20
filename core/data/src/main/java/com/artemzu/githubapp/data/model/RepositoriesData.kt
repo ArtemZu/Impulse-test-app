@@ -10,7 +10,8 @@ data class Repository(
     val language: String?,
     val url: String,
     val ownerAvatarUrl: String,
-    val ownerLogin: String
+    val ownerLogin: String,
+    val isShown: Boolean?
 )
 
 fun RepositoryResponse.asRepository(): Repository =
@@ -22,6 +23,7 @@ fun RepositoryResponse.asRepository(): Repository =
         url = url,
         ownerAvatarUrl = owner.avatarUrl,
         ownerLogin = owner.login,
+        isShown = null
     )
 
 fun Repository.asRepositoryEntity(): RepositoryEntity =
@@ -43,5 +45,6 @@ fun RepositoryEntity.asRepositoryEntity(): Repository =
         language = language,
         url = url,
         ownerAvatarUrl = ownerAvatarUrl,
-        ownerLogin = ownerLogin
+        ownerLogin = ownerLogin,
+        isShown = null
     )
